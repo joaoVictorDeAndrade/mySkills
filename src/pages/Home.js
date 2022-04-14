@@ -4,26 +4,27 @@ import {Button} from "../components/Button";
 import {SkillCard} from "../components/SkillCard";
 import HomeSkeletonPage from "../SkeletonPages/HomeSkeletonPage";
 
-export default function Home(){
-
+export default function Home({name, navigation, route}){
   const [newSkill, setNewSkill] = useState('');
   const [mySkills, setMySkills] = useState([]);
-  const [loadedContent, setLoadedContent] = useState(false)
 
   function handleAddNewSkill(){
-    setMySkills(oldState => [...oldState, newSkill]);
+    if (newSkill.length > 0)
+      setMySkills(oldState => [...oldState, newSkill]);
   }
 
-  useEffect(() => {
-    setTimeout(() => {
-      setLoadedContent(true)
-    }, 2000)
-  }, [])
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     setLoadedContent(true)
+  //   }, 2000)
+  // }, [])
+
+  const loadedContent = true;
 
   return (
     loadedContent ?
     <View style={homeStyle.container}>
-      <Text style={homeStyle.text}>Welcome João</Text>
+      <Text style={homeStyle.text}>Welcome {name || "Stranger"}!</Text>
       <TextInput
         onChangeText={setNewSkill}
         style={homeStyle.input}
@@ -32,10 +33,11 @@ export default function Home(){
       />
       <Button title={'Add'} onPress={handleAddNewSkill}/>
       <Text
-        style={[homeStyle.text, {marginVertical: 50}]}>
+        style={[homeStyle.text, {marginTop: 50, marginBottom: 20}]}>
         List:
       </Text>
       <FlatList
+        showsVerticalScrollIndicator={false}
         data={mySkills}
         renderItem={ (skill) => (
           <SkillCard skill={skill.item} />
@@ -73,24 +75,6 @@ const homeStyle = StyleSheet.create(
       borderRadius: 7,
       alignItems:'center',
       marginTop: 20,
-
-    },
-    buttonText:{
-      color:'white',
-      fontSize:17,
-      fontWeight: 'bold',
-    },
-    textSkill:{
-      color:'white',
-      fontSize:22,
-      fontWeight:'bold',
-    },
-    buttonSkill:{
-      backgroundColor:'#1f1e25',
-      padding:15,
-      borderRadius:50,
-      alignItems: 'center',
-      marginVertical:10,
     },
   }
 )

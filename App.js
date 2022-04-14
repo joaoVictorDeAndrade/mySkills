@@ -11,17 +11,25 @@ import SecondScreen from "./src/pages/SecondPage";
 //Icons
 import IconList from "./src/icons/IconList"
 import IconSecondScreen from "./src/icons/IconSecondScreen";
+import { Platform, StatusBar } from "react-native";
+import { useEffect } from "react";
 
 
 const HomeStack = createNativeStackNavigator();
 const SettingsStack = createNativeStackNavigator();
 
-function HomeStackScreen() {
+function HomeStackScreen({name, navigation, route}) {
   return (
     <HomeStack.Navigator screenOptions={{
         headerShown: false
     }}>
-      <HomeStack.Screen name="Home" component={Home} />
+      <HomeStack.Screen
+        name="Home"
+        children={() =>
+          <Home
+            name={name}
+          />}
+      />
     </HomeStack.Navigator>
   );
 }
@@ -40,7 +48,18 @@ function SettingsStackScreen() {
 
 const Tab = createBottomTabNavigator();
 
-function MainApp() {
+function MainApp({route, navigation}) {
+  const { itemId } = route.params;
+  console.log("MainApp", itemId)
+
+  useEffect(() => {
+    navigation.setParams({
+      itemId: 'someText',
+    });
+  }, [])
+
+  console.log("MainApp", itemId)
+
   return (
   <Tab.Navigator
     screenOptions={{
@@ -49,13 +68,18 @@ function MainApp() {
       tabBarStyle: {
         borderTopWidth: 0,
         backgroundColor: "#121015",
+        paddingBottom: Platform.OS === "ios" ? 30 : 10
       }
     }}
     backBehavior={"order"}
   >
     <Tab.Screen
       name="Dashboard"
-      component={HomeStackScreen}
+      children={() =>
+        <HomeStackScreen
+          name={route.params.name}
+          initialParams={{ itemId:  99 }}
+        />}
       options={{
         tabBarIcon: (({size, color}) =>
             <IconList
@@ -84,23 +108,27 @@ const MainStack = createNativeStackNavigator();
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <MainStack.Navigator
-        initialRouteName="StartScreen"
-        screenOptions={{
-          headerShown: false
-        }}>
-        <MainStack.Screen
-          name="StartScreen"
-          component={StartScreen}
-        />
-        <MainStack.Screen
-          name="MainApp"
-          component={MainApp}
-          options={{gestureEnabled: false}}
-        />
-      </MainStack.Navigator>
-    </NavigationContainer>
+    <>
+      <StatusBar barStyle="light-content" />
+      <NavigationContainer>
+        <MainStack.Navigator
+          initialRouteName="StartScreen"
+          screenOptions={{
+            headerShown: false
+          }}>
+          <MainStack.Screen
+            name="StartScreen"
+            component={StartScreen}
+          />
+          <MainStack.Screen
+            name="MainApp"
+            component={MainApp}
+            options={{gestureEnabled: false}}
+            initialParams={{ itemId: 42 }}
+          />
+        </MainStack.Navigator>
+      </NavigationContainer>
+    </>
   );
 }
 
