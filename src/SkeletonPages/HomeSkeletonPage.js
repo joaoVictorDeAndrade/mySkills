@@ -6,7 +6,7 @@ const width = Dimensions.get("window").width
 
 export default function HomeSkeletonPage({ backgroundColor }) {
   return (
-    <SafeAreaView style={{flex: 1 }} >
+    <SafeAreaView style={{flex: 1}} >
       <SkeletonPlaceholder>
         <View style={{ flexDirection: "row", alignItems: "center", paddingHorizontal: 10, paddingTop: 50}}>
           <View style={{ marginLeft: 20 }}>
